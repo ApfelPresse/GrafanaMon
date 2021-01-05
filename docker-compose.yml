@@ -6,7 +6,7 @@ services:
         image: grafana/grafana
         restart: always
         ports:
-            - 100:3000
+            - 80:3000
         environment:
             GF_RENDERING_SERVER_URL: http://renderer:8081/render
             GF_RENDERING_CALLBACK_URL: http://grafana:3000/
