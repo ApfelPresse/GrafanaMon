@@ -29,6 +29,25 @@ services:
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
     
+    letsencrypt:
+        image: linuxserver/letsencrypt
+        container_name: letsencrypt
+        ports:
+            - 443:443
+        volumes:
+            - .config:/opt/appdata/letsencrypt/config/nginx/site-confs/default
+        restart:
+            always
+        depends_on:
+            - grafana
+        environment:
+            - PUID=1050
+            - PGID=1050
+            - EMAIL=analogwurst-1@yahoo.de
+            - URL=stiefels.biz
+            - SUBDOMAINS=mon
+            - TZ=Europe/Berlin
+    
 volumes:
     grafana_data: {}
     grafana_datasources: {}
