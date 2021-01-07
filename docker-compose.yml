@@ -35,7 +35,7 @@ services:
         ports:
             - 443:443
         volumes:
-            - .default:/config/nginx/site-confs/default
+            - ./default:/config/nginx/site-confs/default
             - nginx_data:/etc/nginx/
         restart:
             always
@@ -44,9 +44,9 @@ services:
         environment:
             - PUID=1050
             - PGID=1050
-            - EMAIL=analasdfogwurst-1@yahoo.de
-            - URL=stieasdffels.biz
-            - SUBDOMAINS=moasdfn
+            - EMAIL=analogwurst-1@yahoo.de
+            - URL=stiefeles.biz
+            - SUBDOMAINS=mon
             - TZ=Europe/Berlin
     
 volumes:
