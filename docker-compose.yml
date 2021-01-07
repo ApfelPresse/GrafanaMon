@@ -5,8 +5,6 @@ services:
     grafana:
         image: grafana/grafana
         restart: always
-        #ports:
-        #    - 80:3000
         environment:
             GF_RENDERING_SERVER_URL: http://renderer:8081/render
             GF_RENDERING_CALLBACK_URL: http://grafana:3000/
@@ -47,7 +45,7 @@ services:
             - PUID=1050
             - PGID=1050
             - EMAIL=analogwurst-1@yahoo.de
-            - URL=mon.stiefels.biz
+            - URL=monitoring.stiefels.biz
             - TZ=Europe/Berlin
     
 volumes:
