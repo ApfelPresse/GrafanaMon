@@ -53,3 +53,4 @@ volumes:
     grafana_data: {}
     grafana_datasources: {}
     grafana_dashboards: {}
+    nginx_data: {}
