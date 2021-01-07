@@ -45,7 +45,7 @@ services:
             - PUID=1050
             - PGID=1050
             - EMAIL=analogwurst-1@yahoo.de
-            - URL=stiefeles.biz
+            - URL=stiefels.biz
             - SUBDOMAINS=mon
             - TZ=Europe/Berlin
     
