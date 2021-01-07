@@ -38,6 +38,7 @@ services:
         volumes:
             - ./default:/config/nginx/site-confs/default
             - nginx_data:/etc/nginx/
+            - letsencrypt_data:/etc/letsencrypt/
         restart:
             always
         depends_on:
@@ -54,3 +55,4 @@ volumes:
     grafana_datasources: {}
     grafana_dashboards: {}
     nginx_data: {}
+    letsencrypt_data: {}
