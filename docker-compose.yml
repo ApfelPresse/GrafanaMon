@@ -34,6 +34,7 @@ services:
         container_name: letsencrypt
         ports:
             - 443:443
+            - 80:80
         volumes:
             - ./default:/config/nginx/site-confs/default
             - nginx_data:/etc/nginx/
