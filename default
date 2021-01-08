@@ -13,7 +13,7 @@ server {
         listen 443 ssl http2 default_server;
         listen [::]:443 ssl http2 default_server;
 
-        root /config/www;
+        root /config/graphite;
         index index.html index.htm index.php;
 
         server_name graphite.stiefels.biz;
@@ -37,7 +37,7 @@ server {
         listen 443 ssl http2 default_server;
         listen [::]:443 ssl http2 default_server;
 
-        root /config/www;
+        root /config/monitoring;
         index index.html index.htm index.php;
 
         server_name monitoring.stiefels.biz;
