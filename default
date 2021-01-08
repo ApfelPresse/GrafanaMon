@@ -16,7 +16,7 @@ server {
         root /config/www;
         index index.html index.htm index.php;
 
-        server_name _;
+        server_name graphite.stiefels.biz;
 
         # enable subfolder method reverse proxy confs
         include /config/nginx/proxy-confs/*.subfolder.conf;
@@ -25,43 +25,36 @@ server {
         include /config/nginx/ssl.conf;
 
         client_max_body_size 0;
-
-        location = /grafana {
-				proxy_pass http://grafana:3000;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
 		
-		location = /graphite {
+		location / {
 				proxy_pass http://graphite:2003;
 				proxy_set_header X-Real-IP $remote_addr;
 				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
+}
+
+server {
+        listen 443 ssl http2 default_server;
+        listen [::]:443 ssl http2 default_server;
+
+        root /config/www;
+        index index.html index.htm index.php;
+
+        server_name monitoring.stiefels.biz;
+
+        # enable subfolder method reverse proxy confs
+        include /config/nginx/proxy-confs/*.subfolder.conf;
+
+        # all ssl related config moved to ssl.conf
+        include /config/nginx/ssl.conf;
+
+        client_max_body_size 0;
 		
 		location / {
-				return 404 /;
-				#proxy_pass http://grafana:3000;
-				#proxy_set_header X-Real-IP $remote_addr;
-				#proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+				proxy_pass http://grafana:3000;
+				proxy_set_header X-Real-IP $remote_addr;
+				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-
-        location ~ \.php$ {
-                fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass 127.0.0.1:9000;
-                fastcgi_index index.php;
-                include /etc/nginx/fastcgi_params;
-        }
-
-# sample reverse proxy config for password protected couchpotato running at IP 192.168.1.50 port 5050 with base url "cp"
-# notice this is within the same server block as the base
-# don't forget to generate the .htpasswd file as described on docker hub
-#       location ^~ /cp {
-#               auth_basic "Restricted";
-#               auth_basic_user_file /config/nginx/.htpasswd;
-#               include /config/nginx/proxy.conf;
-#               proxy_pass http://192.168.1.50:5050/cp;
-#       }
-
 }
 
 # enable subdomain method reverse proxy confs
