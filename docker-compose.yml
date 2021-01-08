@@ -24,7 +24,7 @@ services:
     graphite:
         image: sitespeedio/graphite
         ports:
-            - 12000:2003
+            - 127.0.0.1:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
     
@@ -36,18 +36,24 @@ services:
             - 80:80
         volumes:
             - ./default:/config/nginx/site-confs/default
+            - letsencrypt_etc:/etc
         restart:
             always
         depends_on:
             - grafana
+            - graphite
         environment:
             - PUID=1050
             - PGID=1050
             - EMAIL=analogwurst-1@yahoo.de
-            - URL=monitoring.stiefels.biz
+            - ONLY_SUBDOMAINS=true
+            - SUBDOMAINS=monitoring
+            - URL=stiefels.biz
             - TZ=Europe/Berlin
+            - STAGING=true
     
 volumes:
     grafana_data: {}
     grafana_datasources: {}
     grafana_dashboards: {}
+    letsencrypt_etc: {}
