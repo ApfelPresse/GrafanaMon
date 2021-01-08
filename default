@@ -13,10 +13,10 @@ server {
         listen 443 ssl http2 default_server;
         listen [::]:443 ssl http2 default_server;
 
-        root /config/graphite;
+        #root /config/graphite;
         #index index.html index.htm index.php;
 
-        server_name _;
+        server_name grafana.stiefels.biz;
 
         # enable subfolder method reverse proxy confs
         include /config/nginx/proxy-confs/*.subfolder.conf;
@@ -34,6 +34,26 @@ server {
 		
 		location / {
 				proxy_pass http://grafana:3000;
+				proxy_set_header X-Real-IP $remote_addr;
+				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+server {
+        listen 127.0.0.1:443 ssl http2 default_server;
+
+        server_name graphite.stiefels.biz;
+
+        # enable subfolder method reverse proxy confs
+        include /config/nginx/proxy-confs/*.subfolder.conf;
+
+        # all ssl related config moved to ssl.conf
+        include /config/nginx/ssl.conf;
+
+        client_max_body_size 0;
+		
+		location / {
+				proxy_pass http://graphite:2003;
 				proxy_set_header X-Real-IP $remote_addr;
 				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
