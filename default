@@ -13,7 +13,7 @@ server {
         listen 443 ssl http2 default_server;
         listen [::]:443 ssl http2 default_server;
 
-        #root /config/graphite;
+        #root /config/www;
         #index index.html index.htm index.php;
 
         server_name grafana.stiefels.biz;
@@ -25,12 +25,6 @@ server {
         include /config/nginx/ssl.conf;
 
         client_max_body_size 0;
-		
-		location = /graphite {
-				proxy_pass http://graphite:2003;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
 		
 		location / {
 				proxy_pass http://grafana:3000;
