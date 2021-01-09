@@ -1,27 +1,20 @@
 ## Version 2020/05/23 - Changelog: https://github.com/linuxserver/docker-letsencrypt/commits/master/root/defaults/default
 
 # redirect all traffic to https
-server {
-        listen 80;
-        listen [::]:80;
-        server_name grafana.stiefels.biz www.grafana.stiefels.biz;
-        return 301 https://$host$request_uri;
-}
+#server {
+#        listen 80 default_server;
+#        #listen [::]:80 default_server;
+#        server_name grafana.stiefels.biz www.grafana.stiefels.biz;
+#        return 301 https://$host$request_uri;
+#}
 
 # main server block
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
-
-        #root /config/www;
-        #index index.html index.htm index.php;
-
+        listen 443 ssl http2 default_server;
+        listen [::]:443 ssl http2 default_server;
         server_name grafana.stiefels.biz;
 
-        # enable subfolder method reverse proxy confs
         include /config/nginx/proxy-confs/*.subfolder.conf;
-
-        # all ssl related config moved to ssl.conf
         include /config/nginx/ssl.conf;
 
         client_max_body_size 0;
