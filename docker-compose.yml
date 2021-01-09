@@ -56,7 +56,7 @@ services:
             - STAGING=true
 
     graphitecollectd:
-        image: pboos/collectd-graphitecollectd-graphite
+        image: pboos/collectd-graphite
         container_name: collectd
         privileged: true
         restart:
