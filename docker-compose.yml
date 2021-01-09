@@ -74,22 +74,19 @@ services:
             - HOST_NAME=monitoring
             - GRAPHITE_HOST=10.0.0.3
         mem_limit: 50M
-            
-
-    graphitedockercollectd:
-        image: bobrik/collectd-docker
+    
+    docker_stats:
+        container_name: docker_stats
+        build: ./docker_stats/
+        restart:
+            always
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+           - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+           - 2003:2003
         environment:
-            - GRAPHITE_HOST=10.0.0.3
-            - COLLECTD_HOST=ubuntu-2gb-nbg1-1
-            - COLLECTD_INTERVAL=1
-            - APP_LABEL_KEY=test1
-            - APP_ENV_KEY=test2
-            - TASK_LABEL_KEY=test3
-            - TASK_ENV_KEY=test4
-        mem_limit: 100M
-                
+           - GRAPHITE_SERVER=10.0.0.3
+        mem_limit: 50M
     
 volumes:
     grafana_data: {}
