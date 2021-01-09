@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  docker_stats:
+    container_name: docker_stats
+    build: .
+    restart:
+        always
+    volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+       - 2003:2003
+    environment:
+       - GRAPHITE_SERVER=10.0.0.3
