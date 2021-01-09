@@ -28,16 +28,16 @@ services:
             - 127.0.0.1:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
-    
+
     letsencrypt:
         image: linuxserver/letsencrypt
         container_name: letsencrypt
         ports:
             - 443:443
             - 80:80
-        volumes:
-            - ./default:/config/nginx/site-confs/default
-            - letsencrypt_etc:/etc
+        #volumes:
+        #    - ./default:/config/nginx/site-confs/default
+        #    - letsencrypt_etc:/etc
         restart:
             always
         depends_on:
