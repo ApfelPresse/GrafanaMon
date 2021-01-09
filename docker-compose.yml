@@ -61,7 +61,7 @@ services:
 
     graphitecollectd:
         image: pboos/collectd-graphite
-        container_name: collectd
+        container_name: sys_stats
         privileged: true
         restart:
             always
