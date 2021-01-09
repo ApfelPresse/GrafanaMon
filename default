@@ -1,12 +1,12 @@
 ## Version 2020/05/23 - Changelog: https://github.com/linuxserver/docker-letsencrypt/commits/master/root/defaults/default
 
 # redirect all traffic to https
-#server {
-#        listen 80 default_server;
-#        #listen [::]:80 default_server;
-#        server_name grafana.stiefels.biz www.grafana.stiefels.biz;
-#        return 301 https://$host$request_uri;
-#}
+server {
+        listen 80 default_server;
+        #listen [::]:80 default_server;
+        server_name _;
+        return 301 https://$host$request_uri;
+}
 
 # main server block
 server {
@@ -21,19 +21,6 @@ server {
 		
 		location / {
 				proxy_pass http://grafana:3000;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
-}
-
-server {
-
-	    listen 80;
-        listen [::]:80;
-        server_name graphite.stiefels.biz;
-		
-		location / {
-				proxy_pass http://graphite:2003;
 				proxy_set_header X-Real-IP $remote_addr;
 				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
