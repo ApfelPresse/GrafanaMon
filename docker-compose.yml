@@ -15,9 +15,10 @@ services:
             - grafana_data:/var/lib/grafana
             - grafana_datasources:/etc/grafana/provisioning/datasources
             - grafana_dashboards:/etc/grafana/provisioning/dashboards
-        resources:
-            limits:
-              memory: 600M
+        deploy:
+            resources:
+                limits:
+                  memory: 600M
               
     renderer:
         image: grafana/grafana-image-renderer
@@ -25,9 +26,10 @@ services:
         restart: always
         environment:
             ENABLE_METRICS: 'true'
-        resources:
-            limits:
-              memory: 100M
+        deploy:
+            resources:
+                limits:
+                  memory: 100M
               
     graphite:
         image: sitespeedio/graphite
@@ -36,9 +38,10 @@ services:
             - 10.0.0.3:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
-        resources:
-            limits:
-              memory: 600M
+        deploy:
+            resources:
+                limits:
+                  memory: 600M
               
     letsencrypt:
         image: linuxserver/letsencrypt
@@ -63,9 +66,10 @@ services:
             - URL=stiefels.biz
             - TZ=Europe/Berlin
             - STAGING=false
-        resources:
-                limits:
-                  memory: 200M
+        deploy:
+            resources:
+                    limits:
+                      memory: 200M
 
     graphitecollectd:
         image: pboos/collectd-graphite
