@@ -4,7 +4,7 @@
 server {
         listen 80 default_server;
         listen [::]:80 default_server;
-        server_name _;
+        server_name grafana.stiefels.biz www.grafana.stiefels.biz;
         return 301 https://$host$request_uri;
 }
 
