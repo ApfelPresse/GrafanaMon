@@ -76,6 +76,21 @@ services:
         mem_limit: 50M
             
 
+    graphitedockercollectd:
+        image: bobrik/collectd-docker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            - GRAPHITE_HOST=10.0.0.3
+            - COLLECTD_HOST=ubuntu-2gb-nbg1-1
+            - COLLECTD_INTERVAL=1
+            - APP_LABEL_KEY=test1
+            - APP_ENV_KEY=test2
+            - TASK_LABEL_KEY=test3
+            - TASK_ENV_KEY=test4
+        mem_limit: 100M
+                
+    
 volumes:
     grafana_data: {}
     grafana_datasources: {}
