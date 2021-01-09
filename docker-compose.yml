@@ -25,6 +25,7 @@ services:
         image: sitespeedio/graphite
         ports:
             - 10.0.0.3:2003:2003
+            - 127.0.0.1:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
     
