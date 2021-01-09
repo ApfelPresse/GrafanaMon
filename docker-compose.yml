@@ -25,7 +25,6 @@ services:
         image: sitespeedio/graphite
         ports:
             - 10.0.0.3:2003:2003
-            - 127.0.0.1:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
 
@@ -52,7 +51,25 @@ services:
             - URL=stiefels.biz
             - TZ=Europe/Berlin
             - STAGING=true
-    
+
+    graphitecollectd:
+        image: pboos/collectd-graphitecollectd-graphite
+        container_name: collectd
+        privileged: true
+        restart:
+            always
+        volumes:
+            - /:/hostfs:ro
+        depends_on:
+            - graphite
+        network: host
+        environment:
+            - HOST_NAME=monitoring
+            - GRAPHITE_HOST=10.0.0.3
+            
+ docker run -d  --net=host --privileged
+
+
 volumes:
     grafana_data: {}
     grafana_datasources: {}
