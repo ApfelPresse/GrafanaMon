@@ -48,7 +48,7 @@ services:
             - 80:80
         volumes:
             - ./default:/config/nginx/site-confs/default
-        #    - letsencrypt_etc:/etc
+            - letsencrypt_etc:/etc
         restart:
             always
         depends_on:
