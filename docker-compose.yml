@@ -70,8 +70,6 @@ services:
             - HOST_NAME=monitoring
             - GRAPHITE_HOST=10.0.0.3
             
- docker run -d  --net=host --privileged
-
 
 volumes:
     grafana_data: {}
