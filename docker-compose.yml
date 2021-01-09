@@ -82,8 +82,6 @@ services:
             always
         volumes:
            - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-           - 2003:2003
         environment:
            - GRAPHITE_SERVER=10.0.0.3
         mem_limit: 50M
