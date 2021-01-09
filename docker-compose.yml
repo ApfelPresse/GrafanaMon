@@ -61,7 +61,7 @@ services:
 
     graphitecollectd:
         image: pboos/collectd-graphite
-        container_name: sys_stats
+        container_name: sys-stats
         privileged: true
         restart:
             always
@@ -76,7 +76,7 @@ services:
         mem_limit: 50M
     
     docker_stats:
-        container_name: docker_stats
+        container_name: docker-stats
         build: ./docker_stats/
         hostname: monitoring
         restart:
