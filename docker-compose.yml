@@ -35,8 +35,8 @@ services:
         ports:
             - 443:443
             - 80:80
-        #volumes:
-        #    - ./default:/config/nginx/site-confs/default
+        volumes:
+            - ./default:/config/nginx/site-confs/default
         #    - letsencrypt_etc:/etc
         restart:
             always
