@@ -85,9 +85,10 @@ services:
         environment:
             - HOST_NAME=monitoring
             - GRAPHITE_HOST=10.0.0.3
-        resources:
-            limits:
-              memory: 50M
+        deploy:
+            resources:
+                limits:
+                  memory: 50M
             
 
 volumes:
