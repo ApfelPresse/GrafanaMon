@@ -4,6 +4,7 @@ services:
   
     grafana:
         image: grafana/grafana
+        container_name: grafana
         restart: always
         environment:
             GF_RENDERING_SERVER_URL: http://renderer:8081/render
@@ -17,12 +18,14 @@ services:
       
     renderer:
         image: grafana/grafana-image-renderer
+        container_name: grafana-renderer
         restart: always
         environment:
             ENABLE_METRICS: 'true'
   
     graphite:
         image: sitespeedio/graphite
+        container_name: graphite
         ports:
             - 10.0.0.3:2003:2003
         volumes:
