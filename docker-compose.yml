@@ -65,7 +65,7 @@ services:
             - /:/hostfs:ro
         depends_on:
             - graphite
-        network: host
+        network_mode: host
         environment:
             - HOST_NAME=monitoring
             - GRAPHITE_HOST=10.0.0.3
