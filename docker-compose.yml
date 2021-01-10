@@ -35,7 +35,6 @@ services:
         ports:
             - 10.0.0.3:2003:2003
         volumes:
-            - ./graphite_whisper:/opt/graphite/storage/whisper/
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
         mem_limit: 600M
               
