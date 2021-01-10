@@ -13,6 +13,8 @@ services:
             GF_INSTALL_PLUGINS: grafana-clock-panel,flant-statusmap-panel,vonage-status-panel
         depends_on:
             - renderer
+        links:
+            - graphite
         volumes: 
             - grafana_data:/var/lib/grafana
             - grafana_datasources:/etc/grafana/provisioning/datasources
@@ -29,8 +31,13 @@ services:
               
     graphite:
         image: sitespeedio/graphite
-        container_name: graphite
+        container_name: graphite_container
+        #ports:
+        #    - 10.0.0.3:2003:2003
         ports:
+            - 8000:8000
+            - 2003:2003
+            - 2004:2004
             - 10.0.0.3:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
