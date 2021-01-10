@@ -36,9 +36,9 @@ services:
         #    - 10.0.0.3:2003:2003
         ports:
             - 8000:8000
-            - 2003:2003
+            #- 2003:2003
             - 2004:2004
-            - 10.0.0.3:2003:2003
+            - 0.0.0.0:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
         mem_limit: 600M
