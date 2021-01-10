@@ -58,7 +58,7 @@ services:
             - SUBDOMAINS=grafana
             - URL=stiefels.biz
             - TZ=Europe/Berlin
-            - STAGING=false
+            - STAGING=true
         mem_limit: 200M
 
     graphitecollectd:
