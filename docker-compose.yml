@@ -79,7 +79,7 @@ services:
     
     docker_stats:
         container_name: docker-stats
-        build: ../docker_stats/
+        build: ./docker_stats/
         hostname: monitoring
         restart:
             always
