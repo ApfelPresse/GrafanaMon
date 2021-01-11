@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+    graphitecollectd:
+        image: pboos/collectd-graphite
+        container_name: sys-stats
+        privileged: true
+        restart:
+            always
+        volumes:
+            - /:/hostfs:ro
+        network_mode: host
+        environment:
+            - HOST_NAME=${HOSTNAME}
+            - GRAPHITE_HOST=${GRAPHITE_SERVER}
+        mem_limit: 10M
+    
+    docker_stats:
+        container_name: docker-stats
+        build: ../docker_stats/
+        hostname: ${HOSTNAME}
+        restart:
+            always
+        volumes:
+           - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+           - GRAPHITE_SERVER=${GRAPHITE_SERVER}
+        mem_limit: 50M

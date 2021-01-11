@@ -1,0 +1,55 @@
+version: '2'
+
+services:
+    graphitecollectd:
+        image: pboos/collectd-graphite
+        container_name: sys-stats
+        privileged: true
+        restart:
+            always
+        volumes:
+            - /:/hostfs:ro
+        network_mode: host
+        environment:
+            - HOST_NAME=${HOSTNAME}
+            - GRAPHITE_HOST=${GRAPHITE_SERVER}
+        mem_limit: 10M
+    
+    docker_stats:
+        container_name: docker-stats
+        build: ../docker_stats/
+        hostname: ${HOSTNAME}
+        restart:
+            always
+        volumes:
+           - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+           - GRAPHITE_SERVER=${GRAPHITE_SERVER}
+        mem_limit: 50M
+        
+    letsencrypt:
+        image: linuxserver/letsencrypt
+        container_name: letsencrypt
+        ports:
+            - 443:443
+            - 80:80
+        volumes:
+            - ./default:/config/nginx/site-confs/default
+            - letsencrypt_etc:/etc/
+            - letsencrypt_var:/var/
+        restart:
+            always
+        environment:
+            - PUID=1050
+            - PGID=1050
+            - EMAIL=analogwurst-1@yahoo.de
+            - ONLY_SUBDOMAINS=true
+            - SUBDOMAINS=api
+            - URL=stiefels.biz
+            - TZ=Europe/Berlin
+            - STAGING=true
+        mem_limit: 100M
+        
+volumes:
+    letsencrypt_etc: {}
+    letsencrypt_var: {}
