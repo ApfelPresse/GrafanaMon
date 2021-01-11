@@ -10,7 +10,7 @@ services:
             GF_RENDERING_SERVER_URL: http://renderer:8081/render
             GF_RENDERING_CALLBACK_URL: http://grafana:3000/
             GF_LOG_FILTERS: rendering:debug
-            GF_INSTALL_PLUGINS: grafana-clock-panel,flant-statusmap-panel,vonage-status-panel
+            GF_INSTALL_PLUGINS: grafana-clock-panel,flant-statusmap-panel,vonage-status-panel,marcusolsson-json-datasource
         depends_on:
             - renderer
         volumes: 
