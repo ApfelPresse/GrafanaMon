@@ -26,9 +26,3 @@ services:
         environment:
            - GRAPHITE_SERVER=${GRAPHITE_SERVER}
         mem_limit: 50M
-    
-volumes:
-    grafana_data: {}
-    grafana_datasources: {}
-    grafana_dashboards: {}
-    letsencrypt_etc: {}
