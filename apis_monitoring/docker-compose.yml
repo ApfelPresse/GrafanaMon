@@ -9,8 +9,6 @@ services:
             always
         volumes:
             - /:/hostfs:ro
-        depends_on:
-            - graphite
         network_mode: host
         environment:
             - HOST_NAME=${HOSTNAME}
