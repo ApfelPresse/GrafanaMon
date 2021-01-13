@@ -11,7 +11,7 @@ services:
     volumes:
       - /mnt/HC_Volume_7680431/db:/data/db
     ports:
-      - 127.0.0.1:27017-27019:27017-27019    
+      - 10.0.0.4:27017-27019:27017-27019    
     mem_limit: 500mb
     
   mongo-express:
@@ -20,7 +20,10 @@ services:
     ports:
       - 127.0.0.1:8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     mem_limit: 100mb
+networks:
+    mongonet:
+        driver: bridge
     
