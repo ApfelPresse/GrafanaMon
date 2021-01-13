@@ -1,0 +1,11 @@
+version: '2'
+
+services:    
+    api:
+        container_name: api
+        build: .
+        restart:
+            always
+        ports:
+            - 81:80
+        mem_limit: 50M
