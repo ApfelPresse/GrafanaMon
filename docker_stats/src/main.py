@@ -49,7 +49,7 @@ def main():
     try:
         SLEEP = os.environ["SLEEP"]
     except:
-        SLEEP = 60
+        SLEEP = 10
 
     client = docker.from_env()
     graph_client = GraphiteClient(graphite_server=GRAPHITE_SERVER, graphite_port=GRAPHITE_PORT, prefix="docker.stats")
