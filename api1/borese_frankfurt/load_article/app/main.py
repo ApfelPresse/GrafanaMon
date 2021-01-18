@@ -20,9 +20,6 @@ header = Headers(
 
 
 def exists(collection, date: datetime, url: str):
-    print(collection.find_one({"articles.url": url}))
-    print(collection.count_documents({"articles.url": url}))
-    time.sleep(1)
     return collection.count_documents({"articles.url": url}) > 0
 
 
