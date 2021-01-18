@@ -14,8 +14,6 @@ services:
             - HOST_NAME=${HOSTNAME}
             - GRAPHITE_HOST=${GRAPHITE_SERVER}
         mem_limit: 10M
-        networks:
-            - lbnet
             
     docker_stats:
         container_name: docker-stats
@@ -30,6 +28,7 @@ services:
         mem_limit: 50M
         networks:
             - lbnet
+            
 networks:
     lbnet:
         driver: bridge
