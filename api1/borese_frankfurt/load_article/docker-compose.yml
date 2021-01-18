@@ -1,0 +1,15 @@
+version: '2'
+
+services:    
+    api:
+        container_name: api
+        build: .
+        restart:
+            always
+        mem_limit: 50M
+        environment:
+            - MONGO_CONNECTION_STRING="10.0.0.4:27017"
+            - USERNAME=${USERNAME}
+            - PASSWORD=${PASSWORD}
+            - GRAPHITE_SERVER=10.0.0.3
+            - GRAPHITE_SERVER=2003
