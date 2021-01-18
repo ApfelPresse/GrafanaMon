@@ -46,8 +46,8 @@ def get_random_proxy():
     return random.choice(proxy_list)
 
 
-def req(url, timeout=60):
-    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies=get_random_proxy())
+def req(url, timeout=60, proxy={}):
+    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies=proxy)
     resp.raise_for_status()
     return resp
 
@@ -61,9 +61,10 @@ def main():
     col.create_index([("date", 1)])
 
     limit = 2000
+    proxy = get_random_proxy()
     for offset in range(0, limit, limit):
         request_url = f"https://api.boerse-frankfurt.de/v1/data/category_news?withPaging=true&newsType=ALL&lang=de&offset={offset}&limit={limit}"
-        resp = req(request_url)
+        resp = req(request_url, proxy=proxy)
         json_response = json.loads(resp.content)
         data = json_response["data"]
         
