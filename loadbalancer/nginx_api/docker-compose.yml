@@ -28,7 +28,8 @@ services:
 
 networks:
   lbnet:
-    external: true
+    external:
+      name: lbnet
 
 volumes:
     letsencrypt_etc: {}
