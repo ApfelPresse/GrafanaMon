@@ -53,7 +53,7 @@ def req(url, timeout=60):
 
 
 def main():
-    graph_client = GraphiteClient(graphite_server=os.environ["GRAPHITE_SERVER"], graphite_port=os.environ["GRAPHITE_PORT"], prefix="app.stats")
+    graph_client = GraphiteClient(graphite_server=os.environ["GRAPHITE_SERVER"], graphite_port=int(os.environ["GRAPHITE_PORT"]), prefix="app.stats")
     client = pymongo.MongoClient(f"mongodb://{os.environ['MONGO_CONNECTION_STRING']}/", username=os.environ["USERNAME"],
                                  password=os.environ["PASSWORD"])
     db = client["news"]
