@@ -86,6 +86,7 @@ def main():
                 "full_text": None,
             }
             if exists(col, item_date, item_url):
+                print("item exits, continue")
                 continue
 
             insert_article(col, item_date, db_item)
