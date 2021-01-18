@@ -5,22 +5,19 @@ services:
     cap_add:
       - NET_ADMIN
     restart: always
-    volumes:
-      - /yourpath:/gluetun
+    ports:
+        - 10.0.0.5:9000-9010:8888/tcp
     environment:
       - VPNSP=Surfshark
-      - USER=$USER
-      - PASSWORD=$PASSWORD
+      - OPENVPN_USER=${user}
+      - PASSWORD=${pass}
       - HTTPPROXY=ON
-    mem_limit: 50M
     networks:
-        - lbnet
+      - lbnet
     scale: 10
-    
+    mem_limit: 100mb    
+
 networks:
   lbnet:
     external: true
     name: lbnet
-
-
-
