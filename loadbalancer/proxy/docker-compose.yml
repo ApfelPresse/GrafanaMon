@@ -4,9 +4,6 @@ services:
     image: qmcgaw/private-internet-access
     cap_add:
       - NET_ADMIN
-    #network_mode: bridge
-    #ports:
-    #  - 8888/tcp
     restart: always
     volumes:
       - /yourpath:/gluetun
@@ -15,10 +12,11 @@ services:
       - USER=$USER
       - PASSWORD=$PASSWORD
       - HTTPPROXY=ON
-    mem_limit: 100M
+    mem_limit: 50M
     networks:
         - lbnet
-
+    scale: 10
+    
 networks:
   lbnet:
     external: true
