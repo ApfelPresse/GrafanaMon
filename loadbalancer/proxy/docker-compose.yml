@@ -1,10 +1,10 @@
-version: "3.7"
+version: "2.4"
 services:
   proxy:
     image: qmcgaw/private-internet-access
     cap_add:
       - NET_ADMIN
-    network_mode: bridge
+    #network_mode: bridge
     #ports:
     #  - 8888/tcp
     restart: always
@@ -22,6 +22,7 @@ services:
 networks:
   lbnet:
     external: true
+    name: lbnet
 
 
 

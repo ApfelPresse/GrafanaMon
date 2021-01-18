@@ -1,4 +1,4 @@
-version: '2'
+version: '2.4'
 
 services:
     letsencrypt:
@@ -28,8 +28,8 @@ services:
 
 networks:
   lbnet:
-    external:
-      name: lbnet
+    external: true
+    name: lbnet
 
 volumes:
     letsencrypt_etc: {}

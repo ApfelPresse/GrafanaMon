@@ -31,8 +31,9 @@ services:
             
 networks:
     lbnet:
-        driver: bridge
-        name: lbnet
+        external:
+            name: lbnet
+
         
 volumes:
     letsencrypt_etc: {}
