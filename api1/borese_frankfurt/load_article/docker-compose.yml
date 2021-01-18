@@ -1,8 +1,8 @@
 version: '2'
 
 services:    
-    api:
-        container_name: api
+    bf_load_article:
+        container_name: bf_load_article
         build: .
         restart:
             always
