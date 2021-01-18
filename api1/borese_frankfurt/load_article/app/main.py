@@ -20,7 +20,7 @@ header = Headers(
 
 
 def exists(collection, date: datetime, url: str):
-    return collection.count_documents({"date": date, "articles.url": url}) > 0
+    return collection.count_documents({"articles.url": url}) > 0
 
 
 def insert_article(collection, date: datetime, item: dict):
@@ -58,7 +58,8 @@ def main():
                                  password=os.environ["PASSWORD"])
     db = client["news"]
     col = db["boerse_frankfurt"]
-
+    col.create_index([("articles.url", 1)])
+    
     limit = 2000
     proxy = get_random_proxy()
     for offset in range(0, limit, limit):
@@ -66,7 +67,6 @@ def main():
         resp = req(request_url, proxy=proxy)
         json_response = json.loads(resp.content)
         data = json_response["data"]
-        print(f"get data {data}")
         
         inserts = 0
         for item in tqdm(data):
@@ -86,7 +86,6 @@ def main():
                 "full_text": None,
             }
             if exists(col, item_date, item_url):
-                print("item exits, continue")
                 continue
 
             insert_article(col, item_date, db_item)
