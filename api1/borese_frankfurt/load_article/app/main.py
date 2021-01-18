@@ -20,7 +20,7 @@ header = Headers(
 
 
 def exists(collection, date: datetime, url: str):
-    return collection.count_documents({"articles.url": url}) > 0
+    return collection.find({"articles.url": url}).count() > 0
 
 
 def insert_article(collection, date: datetime, item: dict):
@@ -58,7 +58,6 @@ def main():
                                  password=os.environ["PASSWORD"])
     db = client["news"]
     col = db["boerse_frankfurt"]
-    col.create_index([("articles.url", 1)])
     
     limit = 2000
     proxy = get_random_proxy()
