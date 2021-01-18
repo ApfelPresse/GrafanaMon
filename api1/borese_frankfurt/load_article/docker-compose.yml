@@ -8,7 +8,7 @@ services:
             always
         mem_limit: 50M
         environment:
-            - MONGO_HOST="10.0.0.4"
+            - MONGO_HOST=10.0.0.4
             - USERNAME=${USERNAME}
             - PASSWORD=${PASSWORD}
             - GRAPHITE_SERVER=10.0.0.3
