@@ -20,7 +20,10 @@ header = Headers(
 
 
 def exists(collection, date: datetime, url: str):
-    return collection.find({"articles.url": url}).count() > 0
+    print(collection.find_one({"articles.url": url}))
+    print(collection.count_documents({"articles.url": url}))
+    time.sleep(1)
+    return collection.count_documents({"articles.url": url}) > 0
 
 
 def insert_article(collection, date: datetime, item: dict):
