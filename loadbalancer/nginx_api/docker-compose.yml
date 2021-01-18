@@ -22,7 +22,7 @@ services:
             - URL=stiefels.biz
             - TZ=Europe/Berlin
             - STAGING=true
-        mem_limit: 100M
+        mem_limit: 200M
         networks:
             - lbnet
 
