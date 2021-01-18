@@ -58,7 +58,6 @@ def main():
                                  password=os.environ["PASSWORD"])
     db = client["news"]
     col = db["boerse_frankfurt"]
-    col.create_index([("date", 1)])
 
     limit = 2000
     proxy = get_random_proxy()
@@ -67,6 +66,7 @@ def main():
         resp = req(request_url, proxy=proxy)
         json_response = json.loads(resp.content)
         data = json_response["data"]
+        print(f"get data {data}")
         
         inserts = 0
         for item in tqdm(data):
