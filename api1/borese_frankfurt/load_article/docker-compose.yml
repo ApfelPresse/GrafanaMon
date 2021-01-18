@@ -12,4 +12,4 @@ services:
             - USERNAME=${USERNAME}
             - PASSWORD=${PASSWORD}
             - GRAPHITE_SERVER=10.0.0.3
-            - GRAPHITE_SERVER=2003
+            - GRAPHITE_PORT=2003
