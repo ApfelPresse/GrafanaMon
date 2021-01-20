@@ -25,7 +25,7 @@ services:
         restart: always
         environment:
             ENABLE_METRICS: 'true'
-        mem_limit: 80M
+        mem_limit: 150M
               
     graphite:
         image: sitespeedio/graphite
@@ -34,7 +34,7 @@ services:
             - 10.0.0.3:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
-        mem_limit: 1G
+        mem_limit: 1500M
               
     letsencrypt:
         image: linuxserver/letsencrypt
