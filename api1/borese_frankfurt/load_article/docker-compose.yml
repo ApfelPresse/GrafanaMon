@@ -7,6 +7,7 @@ services:
         restart:
             always
         mem_limit: 50M
+        hostname: ${HOSTNAME}
         environment:
             - MONGO_HOST=10.0.0.4
             - USERNAME=${USERNAME}
