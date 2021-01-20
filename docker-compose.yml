@@ -25,7 +25,7 @@ services:
         restart: always
         environment:
             ENABLE_METRICS: 'true'
-        mem_limit: 150M
+        mem_limit: 300M
               
     graphite:
         image: sitespeedio/graphite
