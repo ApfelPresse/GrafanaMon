@@ -1,0 +1,5 @@
+pymongo
+requests
+schedule
+fake_headers
+tqdm

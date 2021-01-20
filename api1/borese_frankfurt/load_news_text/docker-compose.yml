@@ -1,0 +1,16 @@
+version: '2'
+
+services:    
+    bf_load_news_text:
+        container_name: bf_load_news_text
+        build: .
+        restart:
+            always
+        mem_limit: 50M
+        hostname: ${HOSTNAME}
+        environment:
+            - MONGO_HOST=10.0.0.4
+            - USERNAME=${USERNAME}
+            - PASSWORD=${PASSWORD}
+            - GRAPHITE_SERVER=10.0.0.3
+            - GRAPHITE_PORT=2003
