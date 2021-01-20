@@ -59,7 +59,7 @@ def main():
     db = client["news"]
     col = db["boerse_frankfurt"]
     
-    limit = 2000
+    limit = 100
     proxy = get_random_proxy()
     for offset in range(0, limit, limit):
         request_url = f"https://api.boerse-frankfurt.de/v1/data/category_news?withPaging=true&newsType=ALL&lang=de&offset={offset}&limit={limit}"
@@ -94,7 +94,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-    schedule.every().hour.do(main)
+    schedule.every(30).minutes.do(main)
     while True:
         schedule.run_pending()
         time.sleep(10)
