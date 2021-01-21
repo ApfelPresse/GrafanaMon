@@ -47,8 +47,8 @@ def clean_data(data):
 def get_news(url, proxy):
     _id = url.rsplit('/', 1)[-1]
     request_url = f"https://api.boerse-frankfurt.de/v1/data/news?id={_id}"
+    print(request_url)
     resp = req(request_url, proxy=proxy)
-    time.sleep(0.1)
     return json.loads(resp.content)
 
 
@@ -60,10 +60,10 @@ def main():
     mydb = client["news"]
     col = mydb["boerse_frankfurt"]
 
-    inserts = 0
-    try:
-        proxy = get_random_proxy()
-        for item in col.find({"articles.full_text": {"$type": 10}}):
+    proxy = get_random_proxy()
+    for item in col.find({"articles.full_text": {"$type": 10}}):
+        inserts = 0
+        try:
             print(item["date"])
             for doc in tqdm(item["articles"]):
                 if doc["full_text"] is not None:
@@ -80,8 +80,12 @@ def main():
                 inserts += 1
 
             col.replace_one({'_id': item['_id']}, item)
-    finally:
-        graph_client.send("boerse.frankfurt.load_news_text.count", inserts)
+        except requests.exceptions.ProxyError as ex:
+            print(f"Proxy Error {proxy}")
+            graph_client.send("boerse.frankfurt.load_news_text.proxy_error", 1)
+            proxy = get_random_proxy()
+        finally:
+            graph_client.send("boerse.frankfurt.load_news_text.count", inserts)
 
 
 if __name__ == '__main__':
