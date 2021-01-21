@@ -47,7 +47,7 @@ def clean_data(data):
 def get_news(url, proxy):
     _id = url.rsplit('/', 1)[-1]
     request_url = f"https://api.boerse-frankfurt.de/v1/data/news?id={_id}"
-    resp = req(request_url, proxy)
+    resp = req(request_url, proxy=proxy)
     time.sleep(0.1)
     return json.loads(resp.content)
 
