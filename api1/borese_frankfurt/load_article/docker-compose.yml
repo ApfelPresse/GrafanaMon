@@ -7,7 +7,7 @@ services:
         restart:
             always
         mem_limit: 50M
-        hostname: ${HOSTNAME}
+        hostname: ${HOST_NAME}
         environment:
             - MONGO_HOST=${MONGO_HOST}
             - GRAPHITE_SERVER=${GRAPHITE_HOST}
