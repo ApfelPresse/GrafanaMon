@@ -11,14 +11,14 @@ services:
             - /:/hostfs:ro
         network_mode: host
         environment:
-            - HOST_NAME=${HOSTNAME}
+            - HOST_NAME=${HOST_NAME}
             - GRAPHITE_HOST=${GRAPHITE_HOST}
         mem_limit: 10M
     
     docker_stats:
         container_name: docker-stats
         build: ../../docker_stats/
-        hostname: ${HOSTNAME}
+        hostname: ${HOST_NAME}
         restart:
             always
         volumes:
