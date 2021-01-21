@@ -8,6 +8,7 @@ services:
             always
         mem_limit: 50M
         hostname: ${HOSTNAME}
+        env_file: ./../../../.env
         environment:
             - MONGO_HOST=${MONGO_HOST}
             - USERNAME=${MONGO_USERNAME}
