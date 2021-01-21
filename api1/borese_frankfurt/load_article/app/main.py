@@ -54,8 +54,8 @@ def req(url, timeout=60, proxy={}):
 
 def main():
     graph_client = GraphiteClient(graphite_server=os.environ["GRAPHITE_SERVER"], graphite_port=2003, prefix="app.stats")
-    client = pymongo.MongoClient(f"mongodb://{os.environ['MONGO_HOST']}:27017/", username=os.environ["USERNAME"],
-                                 password=os.environ["PASSWORD"])
+    client = pymongo.MongoClient(f"mongodb://{os.environ['MONGO_HOST']}:27017/")
+    
     db = client["news"]
     col = db["boerse_frankfurt"]
     

@@ -12,7 +12,7 @@ services:
         network_mode: host
         environment:
             - HOST_NAME=${HOSTNAME}
-            - GRAPHITE_HOST=${GRAPHITE_SERVER}
+            - GRAPHITE_HOST=${GRAPHITE_HOST}
         mem_limit: 10M
     
     docker_stats:
@@ -24,5 +24,5 @@ services:
         volumes:
            - /var/run/docker.sock:/var/run/docker.sock
         environment:
-           - GRAPHITE_SERVER=${GRAPHITE_SERVER}
+           - GRAPHITE_SERVER=${GRAPHITE_HOST}
         mem_limit: 50M
