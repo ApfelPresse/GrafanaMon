@@ -8,9 +8,10 @@ services:
             always
         mem_limit: 50M
         hostname: ${HOSTNAME}
+        env_file: ./../../../.env
         environment:
-            - MONGO_HOST=10.0.0.4
-            - USERNAME=${USERNAME}
-            - PASSWORD=${PASSWORD}
-            - GRAPHITE_SERVER=10.0.0.3
-            - GRAPHITE_PORT=2003
+            - MONGO_HOST=${MONGO_HOST}
+            - USERNAME=${MONGO_USERNAME}
+            - PASSWORD=${MONGO_PASSWORD}
+            - GRAPHITE_SERVER=${GRAPHITE_SERVER}
+            - GRAPHITE_PORT=${GRAPHITE_PORT}
