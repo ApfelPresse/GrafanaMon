@@ -16,8 +16,8 @@ header = Headers(
 )
 
 proxy_list = [{
-    f"http": f"10.0.0.5:900{i}",
-    f"https": f"10.0.0.5:900{i}"
+    f"http": f"{os.environ['PROXY_HOST']}:900{i}",
+    f"https": f"{os.environ['PROXY_HOST']}:900{i}"
 } for i in range(0, 10)]
 
 
@@ -54,6 +54,8 @@ def get_news(url, proxy):
 
 def main():
     graph_client = GraphiteClient(graphite_server=os.environ["GRAPHITE_SERVER"], graphite_port=2003, prefix="app.stats")
+    graph_client.send("boerse.frankfurt.load_news_text.executions", 1)
+
     client = pymongo.MongoClient(f"mongodb://{os.environ['MONGO_HOST']}:27017/")
     mydb = client["news"]
     col = mydb["boerse_frankfurt"]
@@ -79,7 +81,7 @@ def main():
 
             col.replace_one({'_id': item['_id']}, item)
     finally:
-        graph_client.send("boerse.frankfurt.news", inserts)
+        graph_client.send("boerse.frankfurt.load_news_text.count", inserts)
 
 
 if __name__ == '__main__':
