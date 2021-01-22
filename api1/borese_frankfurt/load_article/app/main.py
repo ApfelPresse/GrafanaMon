@@ -23,6 +23,15 @@ def exists(collection, date: datetime, url: str):
     return collection.count_documents({"articles.url": url}) > 0
 
 
+def get_env(key, default=None):
+    try:
+        return os.environ[key]
+    except:
+        if not default:
+            raise
+    return default
+
+
 def insert_article(collection, date: datetime, item: dict):
     res = collection.update_one(
         {"date": date},
@@ -36,13 +45,11 @@ def insert_article(collection, date: datetime, item: dict):
     return res
 
 
-proxy_list = [{
-    f"http": f"{os.environ['PROXY_HOST']}:900{i}",
-    f"https": f"{os.environ['PROXY_HOST']}:900{i}"
-} for i in range(0, 10)]
-
-
 def get_random_proxy():
+    proxy_list = [{
+        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}",
+        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}"
+    } for i in range(0, 10)]
     return random.choice(proxy_list)
 
 
@@ -52,10 +59,11 @@ def req(url, timeout=60, proxy={}):
     return resp
 
 
-def main(limit):
-    graph_client = GraphiteClient(graphite_server=os.environ["GRAPHITE_SERVER"], graphite_port=2003, prefix="app.stats")
+def main(limit=100):
+    graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "127.0.0.1"), graphite_port=2003,
+                                  prefix="app.stats")
     graph_client.send("boerse.frankfurt.load_article.executions", 1)
-    client = pymongo.MongoClient(f"mongodb://{os.environ['MONGO_HOST']}:27017/")
+    client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "127.0.0.1")}:27017/')
 
     db = client["news"]
     col = db["boerse_frankfurt"]
