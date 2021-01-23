@@ -90,6 +90,7 @@ def main():
                 except requests.exceptions.HTTPError as err:
                     if err.response.status_code == 404:
                         doc["skip"] = "404 Exception"
+                        continue
                     else:
                         raise err
 
@@ -104,7 +105,7 @@ def main():
 
 
 if __name__ == '__main__':
-    schedule.every(30).minutes.do(main)
+    schedule.every(5).minutes.do(main)
     while True:
         schedule.run_pending()
         time.sleep(10)
