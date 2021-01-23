@@ -36,7 +36,7 @@ services:
             - AUTOHEAL_CONTAINER_LABEL=all
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        mem_limit: 50M
+        mem_limit: 10M
             
 networks:
     lbnet:
