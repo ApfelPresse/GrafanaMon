@@ -1,6 +1,5 @@
 import datetime
 import os
-import pickle
 import random
 import time
 
@@ -93,9 +92,9 @@ def main():
     stock_db = client["stocks"]
     col = stock_db["yahoo_finance"]
 
-    with open("generic.pickle", 'rb') as file:
-        stocks = pickle.load(file)
-        for stock_symbol in tqdm(stocks.symbols):
+    with open("stock_list.txt", "r") as file:
+        for stock_symbol in tqdm(file.readlines()):
+            stock_symbol = stock_symbol.replace("\n", "")
             insert_stocks(col, stock_symbol)
             graph_client.send(f"stocks.{stock_symbol}", 1)
 

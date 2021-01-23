@@ -1,4 +1,3 @@
 requests
 yfinance
 graphitesend
-Yahoo-ticker-downloader
