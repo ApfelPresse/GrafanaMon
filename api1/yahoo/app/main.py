@@ -1,92 +1,108 @@
 import datetime
+import os
+import pickle
+import random
+import time
 
-import pandas as pd
+import pymongo
 import requests
+import schedule
 import yfinance as yf
+from graphitesend import GraphiteClient
+from tqdm import tqdm
 
 
-def find_earlierst_date(collection, stock):
-    return collection.find({"stock": stock}).sort({"date_time": -1}).limit(1)
+def get_env(key, default=None):
+    try:
+        return os.environ[key]
+    except:
+        if not default:
+            raise
+    return default
 
 
-def insert_stock(collection, date: datetime, stock: str, items: dict):
+def find_earliest_date(collection, stock):
+    last = list(collection.find({"stock": stock}).sort([("date", -1)]).limit(1))
+    if len(last) == 0:
+        return datetime.datetime.utcnow() - datetime.timedelta(days=28)
+    return last[0]["date"]
+
+
+def insert_stock(collection, date: datetime, stock: str, items: list):
     res = collection.update_one(
-        {"date": date},
-        {"stock": stock},
         {
-            "$addToSet": {
-                "stock_data": items
-            },
+            "date": date,
+            "stock": stock,
+        },
+        {
+            '$set': {
+                'stock_data': items
+            }
         },
         upsert=True
     )
     return res
 
 
-def get_stock_data_from_yf(symbol_name: str, start, end):
+def get_random_proxy():
+    proxy_list = [{
+        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}",
+        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}"
+    } for i in range(0, 10)]
+    return random.choice(proxy_list)
+
+
+def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
+    proxy = get_random_proxy()
     start_str = start.strftime('%Y-%m-%d')
-    end_str = end.strftime('%Y-%m-%d')
+    end_str = (start + datetime.timedelta(days=6)).strftime('%Y-%m-%d')
     try:
         data = yf.multi._download_one(symbol_name,
                                       interval="1m",
                                       start=start_str,
                                       end=end_str,
-                                      proxy={})
+                                      proxy=proxy)
         print(f"> Symbol {symbol_name} {start_str}-{end_str}")
         return data
     except requests.exceptions.ProxyError as ex:
         print(ex)
-    print(f"> ALL PROXIES DOWN, download without")
-    return yf.download(symbol_name, interval="1m", start=start_str, end=end_str, group_by='ticker')
+        if try_again:
+            return get_stock_data_from_yf(symbol_name, start, False)
 
 
-def get_last_30_days_from_stock(symbol_name):
-    end = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-    start = end - datetime.timedelta(days=28)
-    intervals = []
-    while end <= datetime.datetime.utcnow():
-        end = start + datetime.timedelta(days=6)
-        intervals.append([start, end])
-        start = end
-    df = None
-    for start, end in intervals:
-        try:
-            if df is None:
-                df = get_stock_data_from_yf(symbol_name, start, end)
-            else:
-                df = df.append(get_stock_data_from_yf(symbol_name, start, end))
-        except Exception as ex:
-            print(ex)
-    return df
-
-
-def get_symbol_df(symbol):
-    df = get_last_30_days_from_stock(symbol)
-    if df.shape[0] == 0:
-        raise Exception(f"Empty Dataframe {symbol}")
-    return df
+def insert_stocks(col, stock_symbol):
+    earliest_date = find_earliest_date(col, stock_symbol)
+    diff_days = (datetime.datetime.utcnow() - earliest_date).days
+    if diff_days < 8:
+        print(f"SKIP {stock_symbol}")
+        return
+    df = get_stock_data_from_yf(stock_symbol, earliest_date)
+    df["Timestamp"] = df.index
+    agg = df.groupby([df['Timestamp'].dt.to_period("D")])
+    for day, group in agg:
+        day = day.start_time
+        ins = group.to_dict('records')
+        insert_stock(col, day, stock_symbol, ins)
 
 
 def main():
-    with open("stock_symbols.txt", "r") as stocks:
-        lines = stocks.readlines()
-        while True:
-            for stock_symbol in lines:
-                try:
-                    stock_symbol = stock_symbol.replace("\n", "")
-                    df = get_symbol_df(stock_symbol)
-                    df["Date"] = df.index
-                    agg = df.groupby([df['Date'].dt.to_period("D")])
-                    for day, group in agg:
-                        print(day)
-                        print(group)
-                        ins = group.to_dict('records')
-                        print(ins)
-                        print()
+    graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "127.0.0.1"), graphite_port=2003,
+                                  prefix="app.stats")
+    client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "127.0.0.1")}:27017/')
 
-                    df['Datetime'] = pd.to_datetime(df['Datetime'], format='%Y-%m-%d ')
+    stock_db = client["stocks"]
+    col = stock_db["yahoo_finance"]
 
-                    print(df)
-                    break
-                finally:
-                    pass
+    with open("generic.pickle", 'rb') as file:
+        stocks = pickle.load(file)
+        for stock_symbol in tqdm(stocks.symbols):
+            insert_stocks(col, stock_symbol)
+            graph_client.send(f"stocks.{stock_symbol}", 1)
+
+
+if __name__ == '__main__':
+    main()
+    schedule.every().day.do(main)
+    while True:
+        schedule.run_pending()
+        time.sleep(10)
