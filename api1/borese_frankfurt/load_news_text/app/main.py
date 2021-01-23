@@ -70,14 +70,12 @@ def main():
     col = mydb["boerse_frankfurt"]
 
     proxy = get_random_proxy()
-    for item in col.find({"articles.full_text": {"$type": 10}}):
+    for item in col.find({"articles.full_text": {"$type": 10}, "articles.skip": {"$exists": False}}):
         inserts = 0
         try:
             print(item["date"])
             for doc in tqdm(item["articles"]):
                 if doc["full_text"] is not None:
-                    continue
-                if "skip" in doc:
                     continue
 
                 try:
