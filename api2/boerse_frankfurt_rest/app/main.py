@@ -17,4 +17,4 @@ app.register_blueprint(interface.app)
 app.register_blueprint(health_check.app)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run()
