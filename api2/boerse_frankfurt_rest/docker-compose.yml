@@ -7,7 +7,7 @@ services:
     restart:
       always
     ports:
-      - 10.0.0.2:8000:5000
+      - 10.0.0.2:8000:80
     mem_limit: 300M
     hostname: ${HOST_NAME}
     healthcheck:

@@ -1,9 +1,8 @@
-from flasgger import Swagger
 from flask import Blueprint
 from flask import jsonify
-import flask
 
 app = Blueprint('interface', __name__)
+
 
 @app.route('/colors/<palette>/')
 def colors(palette):
