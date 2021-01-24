@@ -98,7 +98,7 @@ def main():
         for stock_symbol in tqdm(file.readlines()):
             stock_symbol = stock_symbol.replace("\n", "")
             insert_stocks(col, stock_symbol)
-            graph_client.send(f"stocks.{stock_symbol}", 1)
+            graph_client.send(f"stocks.inserts", 1)
 
 
 if __name__ == '__main__':
