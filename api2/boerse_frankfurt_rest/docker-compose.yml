@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  boerse_frankfurt_api:
+    container_name: boerse_frankfurt_api
+    build: .
+    restart:
+      always
+    ports:
+      - 80
+    mem_limit: 50M
+    hostname: ${HOST_NAME}
+    healthcheck:
+      test: ["CMD", "curl", "-sS", "127.0.0.1/health-check"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    environment:
+      - MONGO_HOST=${MONGO_HOST}
+      - GRAPHITE_SERVER=${GRAPHITE_HOST}
+      - GRAPHITE_PORT=${GRAPHITE_PORT}
+      - PROXY_HOST=${PROXY_HOST}
