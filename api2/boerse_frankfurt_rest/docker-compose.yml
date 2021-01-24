@@ -11,7 +11,7 @@ services:
     mem_limit: 300M
     hostname: ${HOST_NAME}
     healthcheck:
-      test: ["CMD", "curl", "-sS", "127.0.0.1:5000/health-check"]
+      test: ["CMD", "curl", "-sS", "127.0.0.1/health-check"]
       interval: 1m
       timeout: 10s
       retries: 3
