@@ -89,6 +89,13 @@ services:
            - GRAPHITE_SERVER=10.0.0.3
         mem_limit: 50M
     
+    loki:
+        image: grafana/loki:2.0.0
+        ports:
+          - 10.0.0.3:3100:3100
+        command: -config.file=/etc/loki/local-config.yaml
+        mem_limit: 100M
+    
 volumes:
     grafana_data: {}
     grafana_datasources: {}
