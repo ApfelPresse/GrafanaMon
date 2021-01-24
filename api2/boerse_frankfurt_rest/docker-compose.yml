@@ -8,7 +8,7 @@ services:
       always
     ports:
       - 10.0.0.2:8000:80
-    mem_limit: 50M
+    mem_limit: 300M
     hostname: ${HOST_NAME}
     healthcheck:
       test: ["CMD", "curl", "-sS", "127.0.0.1/health-check"]
