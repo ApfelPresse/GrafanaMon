@@ -76,6 +76,8 @@ def insert_stocks(col, stock_symbol):
         print(f"SKIP {stock_symbol}")
         return
     df = get_stock_data_from_yf(stock_symbol, earliest_date)
+    if df.size == 0:
+        return
     df["Timestamp"] = df.index
     agg = df.groupby([df['Timestamp'].dt.to_period("D")])
     for day, group in agg:
