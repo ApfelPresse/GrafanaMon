@@ -10,7 +10,7 @@ services:
       - /mnt/HC_Volume_7680431/db:/data/db
     ports:
       - ${MONGO_HOST}:27017-27019:27017-27019    
-    mem_limit: 1gb
+    mem_limit: 1500mb
     
   mongo-express:
     image: mongo-express
