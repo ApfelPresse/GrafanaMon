@@ -11,4 +11,4 @@ services:
     ports:
        - 2003:2003
     environment:
-       - GRAPHITE_SERVER=10.0.0.3
+       - GRAPHITE_SERVER=${GRAPHITE_HOST}

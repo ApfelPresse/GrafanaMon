@@ -31,7 +31,7 @@ services:
         image: sitespeedio/graphite
         container_name: graphite_container
         ports:
-            - 10.0.0.3:2003:2003
+            - ${GRAPHITE_HOST}:2003:2003
         volumes:
             - ./storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
         mem_limit: 1500M
@@ -74,7 +74,7 @@ services:
         network_mode: host
         environment:
             - HOST_NAME=monitoring
-            - GRAPHITE_HOST=10.0.0.3
+            - GRAPHITE_HOST=${GRAPHITE_HOST}
         mem_limit: 10M
     
     docker_stats:
@@ -86,14 +86,14 @@ services:
         volumes:
            - /var/run/docker.sock:/var/run/docker.sock
         environment:
-           - GRAPHITE_SERVER=10.0.0.3
+           - GRAPHITE_SERVER=${GRAPHITE_HOST}
         mem_limit: 50M
     
     loki:
         container_name: loki
         image: grafana/loki:2.0.0
         ports:
-          - 10.0.0.3:3100:3100
+          - ${GRAPHITE_HOST}:3100:3100
         command: -config.file=/etc/loki/local-config.yaml
         mem_limit: 100M
     

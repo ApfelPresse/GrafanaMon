@@ -1,6 +1,5 @@
 import datetime
 import os
-import random
 import time
 
 import pymongo
@@ -43,16 +42,7 @@ def insert_stock(collection, date: datetime, stock: str, items: list):
     return res
 
 
-def get_random_proxy():
-    proxy_list = [{
-        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}",
-        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}"
-    } for i in range(0, 10)]
-    return random.choice(proxy_list)
-
-
 def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
-    proxy = get_random_proxy()
     start_str = start.strftime('%Y-%m-%d')
     end_str = (start + datetime.timedelta(days=6)).strftime('%Y-%m-%d')
     try:
@@ -60,7 +50,10 @@ def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
                                       interval="1m",
                                       start=start_str,
                                       end=end_str,
-                                      proxy=proxy)
+                                      proxy={
+                                          f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080",
+                                          f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080"
+                                      })
         print(f"> Symbol {symbol_name} {start_str}-{end_str}")
         return data
     except requests.exceptions.ProxyError as ex:

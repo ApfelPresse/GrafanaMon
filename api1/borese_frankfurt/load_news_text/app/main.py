@@ -15,15 +15,6 @@ header = Headers(
     headers=True
 )
 
-
-def get_random_proxy():
-    proxy_list = [{
-        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}",
-        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}"
-    } for i in range(0, 10)]
-    return random.choice(proxy_list)
-
-
 def get_env(key, default=None):
     try:
         return os.environ[key]
@@ -33,8 +24,11 @@ def get_env(key, default=None):
     return default
 
 
-def req(url, timeout=30, proxy={}):
-    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies=proxy)
+def req(url, timeout=30):
+    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies={
+        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080",
+        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080"
+    })
     resp.raise_for_status()
     return resp
 
@@ -52,11 +46,11 @@ def clean_data(data):
     return data
 
 
-def get_news(url, proxy):
+def get_news(url):
     _id = url.rsplit('/', 1)[-1]
     request_url = f"https://api.boerse-frankfurt.de/v1/data/news?id={_id}"
     print(request_url)
-    resp = req(request_url, proxy=proxy)
+    resp = req(request_url)
     return json.loads(resp.content)
 
 
@@ -69,7 +63,6 @@ def main():
     mydb = client["news"]
     col = mydb["boerse_frankfurt"]
 
-    proxy = get_random_proxy()
     for item in col.find({"articles.full_text": {"$type": 10}, "articles.skip": {"$exists": False}}):
         inserts = 0
         try:
@@ -79,7 +72,7 @@ def main():
                     continue
 
                 try:
-                    json_response = get_news(doc["url"], proxy)
+                    json_response = get_news(doc["url"])
                     item_full_text = clean_data(json_response["body"])
                     item_country_codes = json_response["countryCodes"]
                     item_subject_codes = json_response["subjectCodes"]
@@ -97,9 +90,7 @@ def main():
                 inserts += 1
             col.replace_one({'_id': item['_id']}, item)
         except requests.exceptions.ProxyError as ex:
-            print(f"Proxy Error {proxy}")
             graph_client.send("boerse.frankfurt.load_news_text.proxy_error", 1)
-            proxy = get_random_proxy()
         finally:
             graph_client.send("boerse.frankfurt.load_news_text.count", inserts)
 

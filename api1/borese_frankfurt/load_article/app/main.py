@@ -2,7 +2,6 @@ import datetime
 import json
 import logging
 import os
-import random
 import time
 
 import pymongo
@@ -45,16 +44,11 @@ def insert_article(collection, date: datetime, item: dict):
     return res
 
 
-def get_random_proxy():
-    proxy_list = [{
-        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}",
-        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:900{i}"
-    } for i in range(0, 10)]
-    return random.choice(proxy_list)
-
-
-def req(url, timeout=60, proxy={}):
-    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies=proxy)
+def req(url, timeout=60):
+    resp = requests.get(url, timeout=timeout, headers=header.generate(), proxies={
+        f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080",
+        f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080"
+    })
     resp.raise_for_status()
     return resp
 
@@ -68,12 +62,11 @@ def main(limit=100):
     db = client["news"]
     col = db["boerse_frankfurt"]
 
-    proxy = get_random_proxy()
     inserts = 0
     try:
         for offset in range(0, limit, limit):
             request_url = f"https://api.boerse-frankfurt.de/v1/data/category_news?withPaging=true&newsType=ALL&lang=de&offset={offset}&limit={limit}"
-            resp = req(request_url, proxy=proxy)
+            resp = req(request_url)
             json_response = json.loads(resp.content)
             data = json_response["data"]
 
@@ -104,7 +97,7 @@ def main(limit=100):
 
 if __name__ == '__main__':
     main(100)
-    schedule.every(30).minutes.do(main, 100)
+    schedule.every(10).minutes.do(main, 100)
     schedule.every().day.do(main, 2000)
     while True:
         schedule.run_pending()
