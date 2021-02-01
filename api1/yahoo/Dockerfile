@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-ENV PROXY_HOST:127.0.0.1
+ENV PROXY_HOST=127.0.0.1
 
 WORKDIR /app
 ADD ./app /app
