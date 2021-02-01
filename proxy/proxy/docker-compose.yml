@@ -10,7 +10,7 @@ services:
       - OPENVPN_USER=${user}
       - PASSWORD=${pass}
       - HTTPPROXY=ON
-    scale: 25
+    scale: 20
     mem_limit: 100M
 
   twisted:
