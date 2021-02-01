@@ -1,0 +1,28 @@
+version: "2.4"
+services:
+  proxy:
+    image: qmcgaw/private-internet-access
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    environment:
+      - VPNSP=Surfshark
+      - OPENVPN_USER=${user}
+      - PASSWORD=${pass}
+      - HTTPPROXY=ON
+    scale: 30
+    mem_limit: 100M
+
+  twisted:
+    container_name: twisted
+    build: .
+    restart:
+      always
+    ports:
+      - ${PROXY_HOST}:8080:8080/tcp
+    healthcheck:
+      test: ["CMD-SHELL", "curl https://google.de --proxy 127.0.0.1:8080"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    mem_limit: 100M

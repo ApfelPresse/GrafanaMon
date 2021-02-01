@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+    graphitecollectd:
+        image: pboos/collectd-graphite
+        container_name: sys-stats
+        privileged: true
+        restart:
+            always
+        volumes:
+            - /:/hostfs:ro
+        network_mode: host
+        environment:
+            - HOST_NAME=${HOST_NAME}
+            - GRAPHITE_HOST=${GRAPHITE_HOST}
+        mem_limit: 10M
+    
+    docker_stats:
+        container_name: docker-stats
+        build: ../../docker_stats/
+        hostname: ${HOST_NAME}
+        restart:
+            always
+        volumes:
+           - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+           - GRAPHITE_SERVER=${GRAPHITE_HOST}
+        mem_limit: 50M
+
+    autoheal:
+        image: willfarrell/autoheal
+        container_name: autoheal
+        environment:
+            - AUTOHEAL_CONTAINER_LABEL=all
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        mem_limit: 10M
