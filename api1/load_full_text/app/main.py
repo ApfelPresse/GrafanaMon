@@ -77,7 +77,7 @@ def load_news(col, graph_client):
                 if doc["full_text"]:
                     continue
 
-                if "skip_count" in doc and doc["skip_count"] > 15:
+                if "skip_count" in doc and doc["skip_count"] > 5:
                     graph_client.send("load_full_text.load_news_text.skip.max", 1)
                     continue
 
@@ -111,7 +111,7 @@ def load_news(col, graph_client):
                 finally:
                     if not doc["full_text"]:
                         skip_count = 0
-                        if skip_count in doc:
+                        if "skip_count" in doc:
                             skip_count = doc["skip_count"]
                         doc["skip_count"] = skip_count + 1
 
