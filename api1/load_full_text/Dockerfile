@@ -23,6 +23,20 @@ RUN pip3 install lxml
 
 RUN apk add libffi-dev
 
+#RUN apk add --no-cache build-essential libpng-dev
+
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add postgresql \
+    && apk add postgresql-dev \
+    && pip install psycopg2 \
+    && apk add jpeg-dev zlib-dev libjpeg \
+    && pip install Pillow \
+    && apk del build-deps
+
+RUN apk add build-base
+RUN pip install cython
+
 WORKDIR /app
 ADD ./app /app
 
