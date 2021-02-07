@@ -21,6 +21,8 @@ RUN pip install psycopg2
 RUN apk add libxml2-dev libxslt-dev python3-dev
 RUN pip3 install lxml
 
+RUN apk add libffi-dev
+
 WORKDIR /app
 ADD ./app /app
 
