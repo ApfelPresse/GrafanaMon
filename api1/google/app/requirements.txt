@@ -4,3 +4,4 @@ schedule
 fake_headers
 tqdm
 graphitesend
+feedparser
