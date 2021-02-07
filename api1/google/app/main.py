@@ -100,14 +100,14 @@ def main():
     graph_client.send("google.load_article.execution", 1)
     try:
         for topic in topics:
-            insert_articles(col, f"https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=de", graph_client)
+            insert_articles(col, f"https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=de", topic, graph_client)
     except Exception as ex:
         graph_client.send("google.articles.exceptions", 1)
         print(ex)
         raise ex
 
 
-def insert_articles(col, url, graph_client):
+def insert_articles(col, url, topic:str, graph_client):
     news_feeds = get_news_feed(url)
     inserts = 0
     try:
@@ -126,6 +126,7 @@ def insert_articles(col, url, graph_client):
                 "google_url": news_feed["link"],
                 "url": feed_url,
                 "summary": summary,
+                "topic": topic,
                 "published": feed_date,
                 "full_text": None
             }
