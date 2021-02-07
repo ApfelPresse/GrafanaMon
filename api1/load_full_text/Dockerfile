@@ -15,6 +15,12 @@ RUN echo "**** install Python ****" && \
     pip3 install --no-cache --upgrade pip setuptools wheel && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
 	
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+RUN pip install psycopg2
+
+RUN apk add libxml2-dev libxslt-dev python3-dev
+RUN pip3 install lxml
+
 WORKDIR /app
 ADD ./app /app
 
