@@ -70,18 +70,25 @@ def main():
                     inserts += 1
                 except UnicodeDecodeError as err:
                     graph_client.send("load_full_text.load_news_text.exceptions.unicode", 1)
-                    print("UnicodeError, continue")
+                    print(err)
                     continue
                 except requests.exceptions.HTTPError as err:
                     if err.response.status_code == 404:
                         doc["skip"] = "404 Exception"
                         graph_client.send("load_full_text.load_news_text.exceptions.404", 1)
+                        print(err)
                         continue
                     else:
                         graph_client.send("load_full_text.load_news_text.exceptions.httperror", 1)
+                        print(err)
                         raise err
+                except requests.exceptions.ProxyError as ex:
+                    graph_client.send("load_full_text.load_news_text.proxy_error", 1)
+                    print(ex)
+                    continue
                 except Exception as err:
                     graph_client.send("load_full_text.load_news_text.exceptions.general", 1)
+                    print(err)
                     raise err
                 finally:
                     if not doc["full_text"]:
@@ -91,9 +98,6 @@ def main():
                         doc["skip_count"] = skip_count + 1
 
             col.replace_one({'_id': item['_id']}, item)
-        except requests.exceptions.ProxyError as ex:
-            pass
-            graph_client.send("load_full_text.load_news_text.proxy_error", 1)
         finally:
             graph_client.send("load_full_text.load_news_text.inserts", inserts)
 
