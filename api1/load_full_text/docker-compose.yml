@@ -1,0 +1,15 @@
+version: '2'
+
+services:    
+    load_full_text:
+        container_name: load_full_text
+        build: .
+        restart:
+            always
+        mem_limit: 50M
+        hostname: ${HOST_NAME}
+        environment:
+            - MONGO_HOST=${MONGO_HOST}
+            - GRAPHITE_SERVER=${GRAPHITE_HOST}
+            - GRAPHITE_PORT=${GRAPHITE_PORT}
+            - PROXY_HOST=${PROXY_HOST}
