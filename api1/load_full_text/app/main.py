@@ -1,4 +1,5 @@
 import os
+import time
 
 import pymongo
 import requests
@@ -104,7 +105,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-    schedule.every().minutes.do(main)
+    schedule.every().minute.do(main)
     while True:
         schedule.run_pending()
         time.sleep(10)
