@@ -52,7 +52,7 @@ def main():
     db = client["news"]
 
     dbs = [
-        # "handelsblatt",
+        "handelsblatt",
         "google_news"
     ]
 
