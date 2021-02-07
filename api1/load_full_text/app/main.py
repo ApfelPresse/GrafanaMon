@@ -52,12 +52,13 @@ def main():
     db = client["news"]
 
     dbs = [
-        "handelsblatt",
+        # "handelsblatt",
         "google_news"
     ]
 
     for db_name in dbs:
         try:
+            print(db_name)
             col = db[db_name]
             load_news(col, graph_client)
         except Exception as ex:
@@ -82,11 +83,8 @@ def load_news(col, graph_client):
 
                 try:
                     article = get_article(doc["url"])
-                    full_text = article.maintext
-                    lang = article.language
-
-                    doc["full_text"] = full_text
-                    doc["lang"] = lang
+                    doc["full_text"] = article.maintext
+                    doc["lang"] = article.language
 
                     inserts += 1
                 except UnicodeDecodeError as err:
@@ -96,6 +94,10 @@ def load_news(col, graph_client):
                     if err.response.status_code == 404:
                         doc["skip"] = "404 Exception"
                         graph_client.send("load_full_text.load_news_text.exceptions.404", 1)
+                        print(err)
+                    elif err.response.status_code == 403:
+                        doc["skip"] = "403 Exception"
+                        graph_client.send("load_full_text.load_news_text.exceptions.403", 1)
                         print(err)
                     else:
                         graph_client.send("load_full_text.load_news_text.exceptions.httperror", 1)
