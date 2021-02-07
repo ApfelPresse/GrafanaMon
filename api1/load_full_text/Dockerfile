@@ -37,7 +37,9 @@ RUN apk update \
 RUN apk add build-base
 RUN pip install cython
 
-RUN pip3 install news-please pymongo fake-headers requests graphitesender schedule tqdm cchardet
+RUN pip install cryptography==2.8 news-please pymongo fake-headers requests graphitesender schedule tqdm cchardet
+
+RUN pip cache purge
 
 WORKDIR /app
 ADD ./app /app
