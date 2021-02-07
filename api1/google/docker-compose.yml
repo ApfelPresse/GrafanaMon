@@ -1,8 +1,8 @@
 version: '2'
 
 services:    
-    bf_load_article:
-        container_name: bf_load_article
+    google_rss:
+        container_name: google_rss
         build: .
         restart:
             always
