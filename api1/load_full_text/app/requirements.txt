@@ -1,8 +1,0 @@
-news-please
-pymongo
-fake-headers
-requests
-graphitesender
-schedule
-tqdm
-cchardet

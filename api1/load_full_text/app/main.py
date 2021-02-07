@@ -50,8 +50,23 @@ def main():
     client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "10.0.0.4")}:27017/')
 
     db = client["news"]
-    col = db["handelsblatt"]
 
+    dbs = [
+        "handelsblatt",
+        "google_news"
+    ]
+
+    for db_name in dbs:
+        try:
+            col = db[db_name]
+            load_news(col, graph_client)
+        except Exception as ex:
+            graph_client.send(f"load_full_text.db.{db_name}.exceptions", 1)
+            print(ex)
+            raise ex
+
+
+def load_news(col, graph_client):
     graph_client.send("load_full_text.load_news_text.execution", 1)
     for item in col.find({"articles.full_text": {"$type": 10}, "articles.skip": {"$exists": False}}):
         inserts = 0
@@ -60,6 +75,11 @@ def main():
             for doc in tqdm(item["articles"]):
                 if doc["full_text"]:
                     continue
+
+                if "skip_count" in doc and doc["skip_count"] > 15:
+                    graph_client.send("load_full_text.load_news_text.skip.max", 1)
+                    continue
+
                 try:
                     article = get_article(doc["url"])
                     full_text = article.maintext
