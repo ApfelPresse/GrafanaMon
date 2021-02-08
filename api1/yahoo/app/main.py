@@ -51,8 +51,8 @@ def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
                                       start=start_str,
                                       end=end_str,
                                       proxy={
-                                          f"http": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080",
-                                          f"https": f"{get_env('PROXY_HOST', '127.0.0.1')}:8080"
+                                          f"http": f"http://{get_env('PROXY_HOST', '10.0.0.6')}:8080",
+                                          f"https": f"http://{get_env('PROXY_HOST', '10.0.0.6')}:8080"
                                       })
         print(f"> Symbol {symbol_name} {start_str}-{end_str}")
         return data
@@ -80,15 +80,15 @@ def insert_stocks(col, stock_symbol):
 
 
 def main():
-    graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "127.0.0.1"), graphite_port=2003,
+    graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "10.0.0.3"), graphite_port=2003,
                                   prefix="app.stats")
-    client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "127.0.0.1")}:27017/')
+    client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "10.0.0.4")}:27017/')
 
     stock_db = client["stocks"]
     col = stock_db["yahoo_finance"]
 
     with open("stock_list.txt", "r") as file:
-        for stock_symbol in tqdm(file.readlines()):
+        for stock_symbol in tqdm(file):
             stock_symbol = stock_symbol.replace("\n", "")
             insert_stocks(col, stock_symbol)
             graph_client.send(f"stocks.inserts", 1)
