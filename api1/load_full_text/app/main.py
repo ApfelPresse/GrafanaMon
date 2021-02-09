@@ -8,6 +8,9 @@ from fake_headers import Headers
 from graphitesend import GraphiteClient
 from newsplease import NewsPlease
 from tqdm import tqdm
+import logging
+
+log = logging.getLogger()
 
 header = Headers(
     headers=True
@@ -58,13 +61,12 @@ def main():
 
     for db_name in dbs:
         try:
-            print(db_name)
+            log.info(db_name)
             col = db[db_name]
             load_news(col, graph_client)
         except Exception as ex:
             graph_client.send(f"load_full_text.db.{db_name}.exceptions", 1)
-            print(ex)
-            raise ex
+            log.error(ex)
 
 
 def load_news(col, graph_client):
@@ -72,7 +74,7 @@ def load_news(col, graph_client):
     for item in col.find({"articles.full_text": {"$type": 10}, "articles.skip": {"$exists": False}}):
         inserts = 0
         try:
-            print(item["date"])
+            log.info(item["date"])
             for doc in tqdm(item["articles"]):
                 if doc["full_text"]:
                     continue
@@ -89,25 +91,25 @@ def load_news(col, graph_client):
                     inserts += 1
                 except UnicodeDecodeError as err:
                     graph_client.send("load_full_text.load_news_text.exceptions.unicode", 1)
-                    print(err)
+                    log.error(err)
                 except requests.exceptions.HTTPError as err:
                     if err.response.status_code == 404:
                         doc["skip"] = "404 Exception"
                         graph_client.send("load_full_text.load_news_text.exceptions.404", 1)
-                        print(err)
+                        log.error(err)
                     elif err.response.status_code == 403:
                         doc["skip"] = "403 Exception"
                         graph_client.send("load_full_text.load_news_text.exceptions.403", 1)
-                        print(err)
+                        log.error(err)
                     else:
                         graph_client.send("load_full_text.load_news_text.exceptions.httperror", 1)
-                        print(err)
+                        log.error(err)
                 except requests.exceptions.ProxyError as ex:
                     graph_client.send("load_full_text.load_news_text.proxy_error", 1)
-                    print(ex)
+                    log.error(ex)
                 except Exception as err:
                     graph_client.send("load_full_text.load_news_text.exceptions.general", 1)
-                    print(err)
+                    log.error(err)
                 finally:
                     if not doc["full_text"]:
                         skip_count = 0
