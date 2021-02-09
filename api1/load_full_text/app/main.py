@@ -71,12 +71,15 @@ def main():
 
 def load_news(col, graph_client):
     graph_client.send("load_full_text.load_news_text.execution", 1)
-    for item in col.find({"articles.full_text": {"$type": 10}, "articles.skip": {"$exists": False}}):
+    for item in col.find({"articles.full_text": {"$type": 10}}):
         inserts = 0
         try:
             log.info(item["date"])
             for doc in tqdm(item["articles"]):
                 if doc["full_text"]:
+                    continue
+
+                if "skip" in doc:
                     continue
 
                 if "skip_count" in doc and doc["skip_count"] > 5:
