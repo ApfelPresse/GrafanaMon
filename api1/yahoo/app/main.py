@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import time
 
@@ -8,6 +9,8 @@ import schedule
 import yfinance as yf
 from graphitesend import GraphiteClient
 from tqdm import tqdm
+
+log = logging.getLogger()
 
 
 def get_env(key, default=None):
@@ -54,19 +57,19 @@ def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
                                           f"http": f"http://{get_env('PROXY_HOST', '10.0.0.6')}:8080",
                                           f"https": f"http://{get_env('PROXY_HOST', '10.0.0.6')}:8080"
                                       })
-        print(f"> Symbol {symbol_name} {start_str}-{end_str}")
+        log.info(f"> Symbol {symbol_name} {start_str}-{end_str}")
         return data
     except requests.exceptions.ProxyError as ex:
-        print(ex)
+        log.error(ex)
         if try_again:
             return get_stock_data_from_yf(symbol_name, start, False)
 
 
-def insert_stocks(col, stock_symbol):
+def insert_stocks(col, stock_symbol, graph_client):
     earliest_date = find_earliest_date(col, stock_symbol)
     diff_days = (datetime.datetime.utcnow() - earliest_date).days
     if diff_days < 8:
-        print(f"SKIP {stock_symbol}")
+        log.info(f"SKIP {stock_symbol}")
         return
     df = get_stock_data_from_yf(stock_symbol, earliest_date)
     if df.size == 0:
@@ -77,6 +80,7 @@ def insert_stocks(col, stock_symbol):
         day = day.start_time
         ins = group.to_dict('records')
         insert_stock(col, day, stock_symbol, ins)
+    graph_client.send(f"stocks.inserts", 1)
 
 
 def main():
@@ -86,12 +90,13 @@ def main():
 
     stock_db = client["stocks"]
     col = stock_db["yahoo_finance"]
+    col_symbols = stock_db["yahoo_finance_stock_symbols"]
 
-    with open("stock_list.txt", "r") as file:
-        for stock_symbol in tqdm(file):
-            stock_symbol = stock_symbol.replace("\n", "")
-            insert_stocks(col, stock_symbol)
-            graph_client.send(f"stocks.inserts", 1)
+    for symbol in tqdm(col_symbols.find({})):
+        stock_symbol = symbol["ticker"]
+        log.info(stock_symbol)
+        insert_stocks(col, stock_symbol, graph_client)
+
 
 
 if __name__ == '__main__':
