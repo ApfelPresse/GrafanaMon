@@ -2,13 +2,13 @@ import datetime
 import logging
 import os
 import time
+from multiprocessing import Pool
 
 import pymongo
 import requests
 import schedule
 import yfinance as yf
 from graphitesend import GraphiteClient
-from tqdm import tqdm
 
 log = logging.getLogger()
 
@@ -65,7 +65,18 @@ def get_stock_data_from_yf(symbol_name: str, start, try_again=True):
             return get_stock_data_from_yf(symbol_name, start, False)
 
 
-def insert_stocks(col, stock_symbol, graph_client):
+graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "10.0.0.3"), graphite_port=2003,
+                              prefix="app.stats")
+client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "10.0.0.4")}:27017/')
+
+
+def insert_stocks(symbol):
+    stock_symbol = symbol["ticker"]
+    log.info(stock_symbol)
+
+    stock_db = client["stocks"]
+    col = stock_db["yahoo_finance"]
+
     earliest_date = find_earliest_date(col, stock_symbol)
     diff_days = (datetime.datetime.utcnow() - earliest_date).days
     if diff_days < 8:
@@ -87,16 +98,12 @@ def main():
     graph_client = GraphiteClient(graphite_server=get_env("GRAPHITE_SERVER", "10.0.0.3"), graphite_port=2003,
                                   prefix="app.stats")
     client = pymongo.MongoClient(f'mongodb://{get_env("MONGO_HOST", "10.0.0.4")}:27017/')
-
     stock_db = client["stocks"]
-    col = stock_db["yahoo_finance"]
+
     col_symbols = stock_db["yahoo_finance_stock_symbols"]
 
-    for symbol in tqdm(col_symbols.find({})):
-        stock_symbol = symbol["ticker"]
-        log.info(stock_symbol)
-        insert_stocks(col, stock_symbol, graph_client)
-
+    with Pool(3) as p:
+        print(p.map(insert_stocks, col_symbols.find({}).sort("_id", -1)))
 
 
 if __name__ == '__main__':
