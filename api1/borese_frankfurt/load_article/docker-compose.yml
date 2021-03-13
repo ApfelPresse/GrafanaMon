@@ -2,12 +2,14 @@ version: '2'
 
 services:    
     bf_load_article:
+        image: apfelpresse/grafanamon_pythonbase:latest
         container_name: bf_load_article
-        build: .
         restart:
             always
         mem_limit: 50M
         hostname: ${HOST_NAME}
+        volumes:
+            - ./app:/app
         environment:
             - MONGO_HOST=${MONGO_HOST}
             - GRAPHITE_SERVER=${GRAPHITE_HOST}
